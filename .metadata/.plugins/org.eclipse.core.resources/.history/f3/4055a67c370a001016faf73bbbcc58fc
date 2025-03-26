@@ -1,0 +1,17 @@
+package com.example.demo.services;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.demo.repositories.UsuarioRepository;
+@Service
+public class usuarioService {
+
+	
+	private UsuarioRepository usuarioRepository;
+	
+	public list<Usuario> obtenerTodos(){
+		return usuarioRepository.findall();
+	}
+}

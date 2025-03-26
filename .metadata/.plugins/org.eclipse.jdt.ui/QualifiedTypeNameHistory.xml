@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.example.demo.models.usuarioModel"/>
+    <fullyQualifiedTypeName name="org.springframework.stereotype.Repository"/>
+    <fullyQualifiedTypeName name="java.time.LocalDateTime"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.recetaModel"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.ingredienteModel"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.comentarioModel"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.Usuario"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.Comentario"/>
+    <fullyQualifiedTypeName name="com.example.demo.models.RecetaIngrediente"/>
+</qualifiedTypeNameHistroy>
