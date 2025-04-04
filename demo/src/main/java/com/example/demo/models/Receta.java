@@ -31,6 +31,19 @@ public class Receta {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean aprobada = false;
 
+    public Receta(Long id, Usuario usuario, String nombre, String descripcion, Integer porciones, LocalDateTime fechaCreacion, Boolean aprobada) {
+        this.id = id;
+        this.usuario = usuario;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.porciones = porciones;
+        this.fechaCreacion = fechaCreacion;
+        this.aprobada = aprobada;
+    }
+    
+    public Receta() {
+        // constructor vacío necesario para JPA
+    }
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}

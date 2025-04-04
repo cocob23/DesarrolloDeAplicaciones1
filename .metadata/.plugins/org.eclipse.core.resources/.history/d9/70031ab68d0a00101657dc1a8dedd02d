@@ -1,0 +1,35 @@
+package com.example.demo.services;
+
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.models.Receta;
+import com.example.demo.models.Usuario;
+import com.example.demo.repositories.RecetaRepository;
+
+@Service
+public class RecetaService {
+
+    private final RecetaRepository recetaRepository;
+
+    @Autowired
+    public RecetaService(RecetaRepository recetaRepository) {
+        this.recetaRepository = recetaRepository;
+    }
+	
+	   public Receta subirReceta(Usuario usuario, String nombre, String descripcion, Integer porciones) {
+	        Receta nuevaReceta = new Receta();
+	        nuevaReceta.setUsuario(usuario);
+	        nuevaReceta.setNombre(nombre);
+	        nuevaReceta.setDescripcion(descripcion);
+	        nuevaReceta.setPorciones(porciones);
+	        nuevaReceta.setFechaCreacion(LocalDateTime.now());
+	        nuevaReceta.setAprobada(false);
+	        
+	        return recetaRepository.save(nuevaReceta);
+	    }
+	
+	
+}

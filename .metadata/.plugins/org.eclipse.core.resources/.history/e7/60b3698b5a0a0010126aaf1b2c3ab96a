@@ -1,0 +1,29 @@
+package com.example.demo.services;
+
+import java.time.LocalDateTime;
+
+import com.example.demo.models.Receta;
+import com.example.demo.models.Usuario;
+import com.example.demo.repositories.RecetaRepository;
+
+public class RecetaService {
+
+	private RecetaRepository recetaRepository;
+	
+	public Receta subirReceta(
+			Long id, 
+			Usuario usuario, 
+			String nombre, 
+			String descripcion, 
+			Integer porciones, 
+			LocalDateTime fechaCreacion,
+			Boolean aprobada
+			) {
+		aprobada = false;
+		fechaCreacion = LocalDateTime.now();
+		Receta nuevaReceta = new Receta(id, usuario, nombre, descripcion, porciones, fechaCreacion, aprobada); 
+		return recetaRepository.save(nuevaReceta);
+	}
+	
+	
+}

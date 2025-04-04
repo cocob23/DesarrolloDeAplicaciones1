@@ -16,12 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-	private final UsuarioService usuarioService;
-	
-	 @Autowired
-	 public UsuarioController(UsuarioService usuarioService) { // inyección de dependencia
-		 this.usuarioService = usuarioService;
-	 }
+	@Autowired
+	UsuarioService usuarioService;
 	
 	@GetMapping("/todos")
 	public List<Usuario> obtenerTodos(){
