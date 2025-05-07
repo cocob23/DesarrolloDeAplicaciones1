@@ -2,6 +2,7 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -27,9 +28,16 @@ public class Receta {
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion = LocalDateTime.now();
+    
+    @Column(nullable = false)
+    private String tipo;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean aprobada = false;
+    
+    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<RecetaIngrediente> ingredientes;
+
 
     public Receta(Long id, Usuario usuario, String nombre, String descripcion, Integer porciones, LocalDateTime fechaCreacion, Boolean aprobada) {
         this.id = id;
@@ -39,6 +47,7 @@ public class Receta {
         this.porciones = porciones;
         this.fechaCreacion = fechaCreacion;
         this.aprobada = aprobada;
+        this.tipo = tipo;
     }
     
     public Receta() {
@@ -65,4 +74,15 @@ public class Receta {
 
     public Boolean getAprobada() { return aprobada; }
     public void setAprobada(Boolean aprobada) { this.aprobada = aprobada; }
+    
+    public String getTipo() {return tipo;}
+    public void setTipo(String tipo) {this.tipo = tipo;}
+    
+    public List<RecetaIngrediente> getIngredientes() {
+        return ingredientes;
+    }
+
+    public void setIngredientes(List<RecetaIngrediente> ingredientes) {
+        this.ingredientes = ingredientes;
+    }
 }

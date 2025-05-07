@@ -1,12 +1,18 @@
 package com.example.demo.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Ingrediente;
 import com.example.demo.models.Receta;
+import com.example.demo.models.RecetaIngrediente;
 import com.example.demo.models.Usuario;
+import com.example.demo.repositories.IngredienteRepository;
+import com.example.demo.repositories.RecetaIngredienteRepository;
 import com.example.demo.repositories.RecetaRepository;
 import com.example.demo.repositories.UsuarioRepository;
 @Service
@@ -14,6 +20,10 @@ public class RecetaService {
 
     private final RecetaRepository recetaRepository;
     private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private RecetaIngredienteRepository recetaIngredienteRepository;
+    @Autowired
+    private IngredienteRepository ingredienteRepository;
 
     @Autowired
     public RecetaService(RecetaRepository recetaRepository, UsuarioRepository usuarioRepository) {
@@ -21,7 +31,7 @@ public class RecetaService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public Receta subirReceta(Long usuarioId, String nombre, String descripcion, Integer porciones) {
+    public Receta subirReceta(Long usuarioId, String nombre, String descripcion, Integer porciones, String tipo) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("usuario no encontrado"));
 
@@ -32,7 +42,40 @@ public class RecetaService {
         nuevaReceta.setPorciones(porciones);
         nuevaReceta.setFechaCreacion(LocalDateTime.now());
         nuevaReceta.setAprobada(false);
+		nuevaReceta.setTipo(tipo);
 
         return recetaRepository.save(nuevaReceta);
     }
+    public List<Receta> buscarPorNombre(String nombre) {
+        return recetaRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+    public Receta obtenerRecetaPorId(Long id) {
+        return recetaRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Receta no encontrada"));
+    }
+    public List<Receta> buscarPorTipo(String tipo) {
+        return recetaRepository.findByTipoIgnoreCase(tipo);
+    }
+    
+    public List<Receta> buscarPorIngrediente(String nombre) {
+        return recetaRepository.findRecetasByIngredienteNombre(nombre);
+    }
+    
+    public RecetaIngrediente agregarIngrediente(Long recetaId, Long ingredienteId, String cantidad) {
+        Receta receta = recetaRepository.findById(recetaId)
+                .orElseThrow(() -> new NoSuchElementException("Receta no encontrada"));
+
+        Ingrediente ingrediente = ingredienteRepository.findById(ingredienteId)
+                .orElseThrow(() -> new NoSuchElementException("Ingrediente no encontrado"));
+
+        RecetaIngrediente ri = new RecetaIngrediente();
+        ri.setReceta(receta);
+        ri.setIngrediente(ingrediente);
+        ri.setCantidad(cantidad);
+
+        return recetaIngredienteRepository.save(ri);
+    }
+
+
+
 }

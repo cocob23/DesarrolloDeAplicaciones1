@@ -2,6 +2,8 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "usuarios")
@@ -21,6 +23,7 @@ public class Usuario {
     private String clave;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore 
     private List<Receta> recetas;
 
     public Long getId() { return id; }
