@@ -56,15 +56,6 @@ public class RecetaController {
 	    return ResponseEntity.ok(recetas);
 	}
 	
-	@GetMapping("/with-ingredient")
-	public ResponseEntity<?> buscarPorIngrediente(@RequestParam String name) {
-	    List<Receta> recetas = recetaService.buscarPorIngrediente(name);
-	    if (recetas.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	            .body("No se encontraron recetas con el ingrediente: " + name);
-	    }
-	    return ResponseEntity.ok(recetas);
-	}
 	@PostMapping("/agregar-ingrediente")
 	public ResponseEntity<?> agregarIngrediente(@RequestBody RecetaIngredienteDTO dto) {
 	    try {
@@ -76,7 +67,33 @@ public class RecetaController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 	    }
 	}
+	
+	@GetMapping("/con-ingrediente")
+	public ResponseEntity<?> recetasConIngrediente(@RequestParam String name) {
+	    List<Receta> recetas = recetaService.buscarConIngrediente(name);
+	    return recetas.isEmpty()
+	        ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron recetas con ese ingrediente.")
+	        : ResponseEntity.ok(recetas);
+	}
 
+	@GetMapping("/recientes")
+	public ResponseEntity<List<Receta>> obtenerRecientes() {
+	    List<Receta> recetas = recetaService.obtenerRecetasMasRecientes();
+	    return ResponseEntity.ok(recetas);
+	}
+	
+	@PostMapping("/{id}/like")
+	public ResponseEntity<?> darLike(@PathVariable Long id, @RequestParam Long usuarioId) {
+		recetaService.darLike(usuarioId, id); 
+	    return ResponseEntity.ok("Like registrado");
+	}
+
+
+	@GetMapping("/{id}/likes")
+	public ResponseEntity<?> contarLikes(@PathVariable Long id) {
+	    long cantidad = recetaService.contarLikes(id);
+	    return ResponseEntity.ok(cantidad);
+	}
 
 
 }

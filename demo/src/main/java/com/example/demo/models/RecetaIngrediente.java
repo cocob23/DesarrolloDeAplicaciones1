@@ -1,5 +1,7 @@
 package com.example.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class RecetaIngrediente {
 
     @ManyToOne
     @JoinColumn(name = "receta_id", nullable = false)
+    @JsonBackReference
     private Receta receta;
 
     @ManyToOne

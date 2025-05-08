@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 @Entity
 @Table(name = "recetas") // opcional, si la tabla tiene otro nombre en la db
@@ -36,8 +38,8 @@ public class Receta {
     private Boolean aprobada = false;
     
     @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<RecetaIngrediente> ingredientes;
-
+    @JsonManagedReference
+    private List<RecetaIngrediente> ingredientes;
 
     public Receta(Long id, Usuario usuario, String nombre, String descripcion, Integer porciones, LocalDateTime fechaCreacion, Boolean aprobada) {
         this.id = id;
@@ -78,11 +80,7 @@ public class Receta {
     public String getTipo() {return tipo;}
     public void setTipo(String tipo) {this.tipo = tipo;}
     
-    public List<RecetaIngrediente> getIngredientes() {
-        return ingredientes;
-    }
+    public List<RecetaIngrediente> getIngredientes() {return ingredientes;}
 
-    public void setIngredientes(List<RecetaIngrediente> ingredientes) {
-        this.ingredientes = ingredientes;
-    }
+    public void setIngredientes(List<RecetaIngrediente> ingredientes) {this.ingredientes = ingredientes;}
 }

@@ -15,7 +15,8 @@ public interface RecetaRepository extends JpaRepository<Receta, Long> {
 	List<Receta> findByNombreContainingIgnoreCase(String nombre);
 	Optional<Receta> findById(Long id);
 	List<Receta> findByTipoIgnoreCase(String tipo);
-	@Query("SELECT ri.receta FROM RecetaIngrediente ri WHERE LOWER(ri.ingrediente.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
-	List<Receta> findRecetasByIngredienteNombre(@Param("nombre") String nombre);
+	@Query("SELECT r FROM Receta r JOIN RecetaIngrediente ri ON r.id = ri.receta.id JOIN Ingrediente i ON ri.ingrediente.id = i.id WHERE LOWER(i.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+	List<Receta> findByIngredienteNombre(String nombre);
+	List<Receta> findTop5ByOrderByFechaCreacionDesc();
 
 }
