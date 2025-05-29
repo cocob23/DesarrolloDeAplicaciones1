@@ -54,4 +54,9 @@ public class UsuarioService {
         u.setCodigoReset(null); // Limpieza del código usado
         usuarioRepository.save(u);
     }
+    
+    public Optional<Usuario> login(String mail, String clave) {
+        return usuarioRepository.findByMailAndClave(mail, clave);
+    }
+
 }

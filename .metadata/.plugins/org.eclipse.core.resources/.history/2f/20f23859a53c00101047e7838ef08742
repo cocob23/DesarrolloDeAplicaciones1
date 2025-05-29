@@ -1,0 +1,66 @@
+package com.example.demo.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dtos.ComentarioRespuestaDTO;
+import com.example.demo.models.Comentario;
+import com.example.demo.models.Receta;
+import com.example.demo.models.Usuario;
+import com.example.demo.repositories.ComentarioRepository;
+import com.example.demo.repositories.RecetaRepository;
+import com.example.demo.repositories.UsuarioRepository;
+
+@Service
+public class ComentarioService {
+
+    @Autowired
+    ComentarioRepository comentarioRepo;
+
+    @Autowired
+    UsuarioRepository usuarioRepo;
+
+    @Autowired
+    RecetaRepository recetaRepo;
+
+    public Comentario agregarComentario(Long usuarioId, Long recetaId, Integer puntuacion, String texto) {
+        Usuario usuario = usuarioRepo.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Receta receta = recetaRepo.findById(recetaId).orElseThrow(() -> new RuntimeException("Receta no encontrada"));
+
+        Comentario c = new Comentario();
+        c.setUsuario(usuario);
+        c.setReceta(receta);
+        c.setPuntuacion(puntuacion);
+        c.setComentario(texto);
+        c.setAprobado(false); // inicial
+
+        return comentarioRepo.save(c);
+    }
+
+    public List<ComentarioRespuestaDTO> obtenerPendientes() {
+        return comentarioRepo.findAll().stream()
+            .filter(c -> !c.getAprobado())
+            .map(c -> new ComentarioRespuestaDTO(
+                c.getId(),
+                c.getUsuario().getAlias(),
+                c.getReceta().getNombre(),
+                c.getComentario(),
+                c.getPuntuacion(),
+                c.getFecha(),
+                c.getAprobado()
+            ))
+            .toList();
+    }
+
+    public void aprobarComentario(Long id) {
+        Comentario c = comentarioRepo.findById(id).orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+        c.setAprobado(true);
+        comentarioRepo.save(c);
+    }
+
+    public void eliminarComentario(Long id) {
+        comentarioRepo.deleteById(id);
+    }
+}

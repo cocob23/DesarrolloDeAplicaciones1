@@ -1,0 +1,42 @@
+package com.example.demo.services;
+
+@Service
+public class ComentarioService {
+
+    @Autowired
+    ComentarioRepository comentarioRepo;
+
+    @Autowired
+    UsuarioRepository usuarioRepo;
+
+    @Autowired
+    RecetaRepository recetaRepo;
+
+    public Comentario agregarComentario(Long usuarioId, Long recetaId, Integer puntuacion, String texto) {
+        Usuario usuario = usuarioRepo.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Receta receta = recetaRepo.findById(recetaId).orElseThrow(() -> new RuntimeException("Receta no encontrada"));
+
+        Comentario c = new Comentario();
+        c.setUsuario(usuario);
+        c.setReceta(receta);
+        c.setPuntuacion(puntuacion);
+        c.setComentario(texto);
+        c.setAprobado(false); // inicial
+
+        return comentarioRepo.save(c);
+    }
+
+    public List<Comentario> obtenerPendientes() {
+        return comentarioRepo.findAll().stream().filter(c -> !c.getAprobado()).toList();
+    }
+
+    public void aprobarComentario(Long id) {
+        Comentario c = comentarioRepo.findById(id).orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+        c.setAprobado(true);
+        comentarioRepo.save(c);
+    }
+
+    public void eliminarComentario(Long id) {
+        comentarioRepo.deleteById(id);
+    }
+}

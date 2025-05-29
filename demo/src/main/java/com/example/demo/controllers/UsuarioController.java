@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.demo.models.Usuario;
 import com.example.demo.services.UsuarioService;
@@ -58,4 +59,16 @@ public class UsuarioController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 	    }
 	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestParam String mail, @RequestParam String clave) {
+	    Optional<Usuario> usuario = usuarioService.login(mail, clave);
+
+	    if (usuario.isPresent()) {
+	        return ResponseEntity.ok(usuario.get());
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+	    }
+	}
+
 }

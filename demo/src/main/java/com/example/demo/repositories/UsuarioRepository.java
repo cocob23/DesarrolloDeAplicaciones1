@@ -10,5 +10,6 @@ import com.example.demo.models.Usuario;
 public interface UsuarioRepository extends JpaRepository <Usuario, Long>{
 	Optional<Usuario> findByMail(String mail);
 	Optional<Usuario> findByCodigoReset(String codigoReset);
+	Optional<Usuario> findByMailAndClave(String mail, String clave);
 
 }
