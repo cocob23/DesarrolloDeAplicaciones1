@@ -93,16 +93,44 @@ public class RecetaService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
-        LikeReceta like = new LikeReceta();
-        like.setReceta(receta);  // ← MUY IMPORTANTE
-        like.setUsuario(usuario);
+        if (receta.getId() == null || usuario.getId() == null) {
+            throw new IllegalArgumentException("Entidad no completamente cargada");
+        }
 
-		likeRecetaRepository.save(like);
+        LikeReceta like = new LikeReceta();
+        like.setReceta(receta);       // asegurate que no sea null
+        like.setUsuario(usuario);     // idem
+        likeRecetaRepository.save(like);
     }
+
 
     public long contarLikes(Long recetaId) {
         Receta receta = recetaRepository.findById(recetaId).orElseThrow();
         return likeRecetaRepository.countByReceta(receta);
     }
+    
+    public void eliminarReceta(Long recetaId) {
+        Receta receta = recetaRepository.findById(recetaId)
+            .orElseThrow(() -> new NoSuchElementException("Receta no encontrada"));
+        recetaRepository.delete(receta);
+    }
+    
+    public Receta editarReceta(Long id, Receta datosNuevos) {
+        Receta receta = recetaRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Receta no encontrada"));
+
+        receta.setNombre(datosNuevos.getNombre());
+        receta.setDescripcion(datosNuevos.getDescripcion());
+        receta.setPorciones(datosNuevos.getPorciones());
+        receta.setTipo(datosNuevos.getTipo());
+
+        return recetaRepository.save(receta);
+    }
+    
+    public Receta guardarReceta(Receta receta) {
+        return recetaRepository.save(receta);
+    }
+
+
 
 }

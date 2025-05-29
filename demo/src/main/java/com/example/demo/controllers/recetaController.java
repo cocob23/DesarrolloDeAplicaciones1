@@ -7,15 +7,20 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.services.RecetaService;
+
+import ch.qos.logback.core.joran.spi.HttpUtil.RequestMethod;
+
 import com.example.demo.dtos.RecetaIngredienteDTO;
 import com.example.demo.models.Receta;
 import com.example.demo.models.RecetaIngrediente;
@@ -94,6 +99,44 @@ public class RecetaController {
 	    long cantidad = recetaService.contarLikes(id);
 	    return ResponseEntity.ok(cantidad);
 	}
+	
+	@DeleteMapping("/{id}/eliminar")
+	public ResponseEntity<?> eliminarReceta(@PathVariable Long id) {
+	    try {
+	        recetaService.eliminarReceta(id);
+	        return ResponseEntity.ok("Receta eliminada con éxito");
+	    } catch (NoSuchElementException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    }
+	}
+	
+	@PutMapping("/editar/{id}")
+	public ResponseEntity<?> editarRecetaPut(
+	        @PathVariable Long id,
+	        @RequestParam Long usuarioId,
+	        @RequestBody Receta recetaActualizada
+	) {
+	    try {
+	        Receta receta = recetaService.obtenerRecetaPorId(id);
+
+	        if (!receta.getUsuario().getId().equals(usuarioId)) {
+	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tenés permiso para editar esta receta.");
+	        }
+
+	        receta.setNombre(recetaActualizada.getNombre());
+	        receta.setDescripcion(recetaActualizada.getDescripcion());
+	        receta.setPorciones(recetaActualizada.getPorciones());
+	        receta.setTipo(recetaActualizada.getTipo());
+
+	        recetaService.guardarReceta(receta);
+	        return ResponseEntity.ok("Receta actualizada");
+	    } catch (NoSuchElementException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Receta no encontrada");
+	    }
+	}
+
+
+
 
 
 }
