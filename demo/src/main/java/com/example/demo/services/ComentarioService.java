@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,4 +76,20 @@ public class ComentarioService {
     public void eliminarComentario(Long id) {
         comentarioRepository.deleteById(id);
     }
+    
+
+public List<ComentarioRespuestaDTO> obtenerAprobadosPorReceta(Long recetaId) {
+    List<Comentario> comentarios = comentarioRepository.findByRecetaIdAndAprobadoTrue(recetaId);
+    return comentarios.stream()
+        .map(c -> new ComentarioRespuestaDTO(
+            c.getId(),
+            c.getUsuario().getAlias(),
+            c.getReceta().getNombre(),
+            c.getComentario(),
+            c.getPuntuacion(),
+            c.getFecha(),
+            c.getAprobado()
+        ))
+        .collect(Collectors.toList());
+}
 }
